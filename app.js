@@ -167,26 +167,57 @@ if (form) {
   });
 }
 
-/* ── Case Video Autoplay ── */
-(function initCaseVideos(){
-  const cards = document.querySelectorAll('a.case-card');
-  cards.forEach(card => {
-    const video = card.querySelector('video');
-    if(!video) return;
-    // Desktop: play on hover
-    card.addEventListener('mouseenter', () => { video.play().catch(()=>{}); });
-    card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
-  });
-  // Mobile: play when visible
-  if(isMobile){
-    const vObs = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        const v = entry.target.querySelector('video');
-        if(!v) return;
-        if(entry.isIntersecting){ v.play().catch(()=>{}); }
-        else { v.pause(); v.currentTime = 0; }
-      });
-    }, {threshold: 0.5});
-    cards.forEach(c => vObs.observe(c));
+/* ── Case Video Carousel ── */
+(function initCaseCarousel(){
+  const scroll = document.getElementById('casesScroll');
+  const prevBtn = document.getElementById('casesPrev');
+  const nextBtn = document.getElementById('casesNext');
+  if(!scroll) return;
+
+  const cards = Array.from(scroll.querySelectorAll('a.case-card'));
+
+  /* Autoplay videos when visible (both desktop & mobile) */
+  const vObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const v = entry.target.querySelector('video');
+      if(!v) return;
+      if(entry.isIntersecting){ v.play().catch(()=>{}); }
+      else { v.pause(); v.currentTime = 0; }
+    });
+  }, {threshold: 0.4});
+  cards.forEach(c => vObs.observe(c));
+
+  /* Arrow navigation */
+  function scrollByCard(dir){
+    const card = cards[0];
+    if(!card) return;
+    const w = card.offsetWidth + 20; // card width + gap
+    scroll.scrollBy({left: dir * w, behavior:'smooth'});
   }
+  if(prevBtn) prevBtn.addEventListener('click', e => { e.preventDefault(); scrollByCard(-1); });
+  if(nextBtn) nextBtn.addEventListener('click', e => { e.preventDefault(); scrollByCard(1); });
+
+  /* Drag to scroll (desktop) */
+  let isDragging = false, startX = 0, scrollStart = 0, hasMoved = false;
+  scroll.addEventListener('mousedown', e => {
+    isDragging = true; hasMoved = false;
+    startX = e.pageX; scrollStart = scroll.scrollLeft;
+    scroll.classList.add('is-dragging');
+  });
+  addEventListener('mousemove', e => {
+    if(!isDragging) return;
+    const dx = e.pageX - startX;
+    if(Math.abs(dx) > 5) hasMoved = true;
+    scroll.scrollLeft = scrollStart - dx;
+  });
+  addEventListener('mouseup', () => {
+    if(isDragging){
+      isDragging = false;
+      scroll.classList.remove('is-dragging');
+    }
+  });
+  /* Prevent click on link if dragged */
+  cards.forEach(card => {
+    card.addEventListener('click', e => { if(hasMoved) e.preventDefault(); });
+  });
 })();
