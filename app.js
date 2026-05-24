@@ -166,3 +166,27 @@ if (form) {
     setTimeout(() => { btn.textContent = 'Получить бесплатный аудит ниши'; btn.style.background = ''; btn.style.color = ''; }, 4000);
   });
 }
+
+/* ── Case Video Autoplay ── */
+(function initCaseVideos(){
+  const cards = document.querySelectorAll('a.case-card');
+  cards.forEach(card => {
+    const video = card.querySelector('video');
+    if(!video) return;
+    // Desktop: play on hover
+    card.addEventListener('mouseenter', () => { video.play().catch(()=>{}); });
+    card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
+  });
+  // Mobile: play when visible
+  if(isMobile){
+    const vObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        const v = entry.target.querySelector('video');
+        if(!v) return;
+        if(entry.isIntersecting){ v.play().catch(()=>{}); }
+        else { v.pause(); v.currentTime = 0; }
+      });
+    }, {threshold: 0.5});
+    cards.forEach(c => vObs.observe(c));
+  }
+})();
