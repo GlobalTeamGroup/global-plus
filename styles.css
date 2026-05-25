@@ -121,8 +121,9 @@ p, li, span, strong, em, a, div, blockquote, label, td, th, figcaption {
 .card p{font-size:13px;color:#fff;line-height:1.6}
 
 /* ABOUT */
-.about-layout-new{display:grid;grid-template-columns:2.5fr 1fr 1fr;gap:20px;align-items:start}
+.about-layout-new{display:grid;grid-template-columns:2.5fr 1fr 1fr;gap:20px;align-items:stretch}
 .about-col{display:flex;flex-direction:column;gap:16px}
+.about-col .card{flex:1;display:flex;flex-direction:column;justify-content:flex-start}
 .about-main{}
 .about-lead{font-size:clamp(14px,1.8vw,17px);color:#fff;line-height:1.6;margin-bottom:10px;font-weight:500}
 .about-main p{font-size:13px;color:#fff;line-height:1.6;margin-bottom:8px}
