@@ -222,8 +222,9 @@ a.case-card:hover .case-link{color:#fff !important}
 
 /* RESPONSIVE */
 @media(max-width:1024px){
-  .process-flow{grid-template-columns:1fr 1fr 1fr;grid-auto-rows:1fr;gap:10px}
+  .process-flow{grid-template-columns:1fr 1fr 1fr;gap:10px}
   .process-arrow{display:none}
+  .process-step{min-height:260px}
   .solutions-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:768px){
