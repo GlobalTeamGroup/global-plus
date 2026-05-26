@@ -182,7 +182,7 @@ a.case-card:hover .case-link{color:#fff !important}
 @keyframes hintPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 
 /* PROCESS */
-.process-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr;gap:6px;align-items:center;margin-bottom:16px}
+.process-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr;gap:6px;align-items:stretch;margin-bottom:16px}
 .process-step{padding:14px;flex:1}
 .process-step:hover{}
 .step-num{font-family:var(--font-h);font-size:24px;font-weight:900;margin-bottom:3px}
