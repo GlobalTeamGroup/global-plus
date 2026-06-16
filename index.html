@@ -36,16 +36,35 @@
 </head>
 <body>
 
-  <!-- LOADER -->
+  <!-- PRELOADER (Phase 1: 0-10% real → 0-100% visual) -->
   <div id="loader">
     <div class="loader-content">
+      <div class="preloader-orb">
+        <div class="preloader-orb-core"></div>
+        <div class="preloader-orb-ring"></div>
+        <div class="preloader-orb-ring preloader-orb-ring-2"></div>
+        <div class="preloader-particle" style="--i:0"></div>
+        <div class="preloader-particle" style="--i:1"></div>
+        <div class="preloader-particle" style="--i:2"></div>
+        <div class="preloader-particle" style="--i:3"></div>
+        <div class="preloader-particle" style="--i:4"></div>
+        <div class="preloader-particle" style="--i:5"></div>
+      </div>
       <div class="loader-logo">
         <img src="assets/logo.png" alt="Глобал Плюс" class="loader-logo-img">
         <span>ГЛОБАЛ <span class="gold">ПЛЮС</span></span>
       </div>
+      <p class="preloader-sub">Премиальные сайты для бизнеса</p>
+      <div class="preloader-values">КИНО-ДИЗАЙН • 200+ НИШ • 48 ЧАСОВ</div>
       <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
       <div class="loader-pct" id="loaderPct">0%</div>
     </div>
+  </div>
+
+  <!-- SITE LOADING BAR (Phase 2: 10-100%) -->
+  <div id="siteLoadingBar" class="site-loading-bar">
+    <div class="site-loading-fill" id="siteLoadingFill"><div class="site-loading-fill-inner" id="siteLoadingFillInner"></div></div>
+    <span class="site-loading-text" id="siteLoadingText">Загрузка видео...</span>
   </div>
 
   <!-- CANVAS -->
