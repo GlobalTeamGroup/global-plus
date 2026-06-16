@@ -21,7 +21,9 @@ const ctx = canvas.getContext('2d');
 
 /* ── State ── */
 let targetFrame = 0, currentFrame = 0, isReady = false;
+let preloaderDismissed = false;
 const frames = new Array(TOTAL_FRAMES);
+const PRELOADER_THRESHOLD = 10; // dismiss preloader at 10% real
 
 /* ── Canvas sizing ── */
 function resize(){
@@ -50,6 +52,11 @@ function loadFrame(index){
   });
 }
 
+/* ── Site loading bar refs ── */
+const siteLoadingBar = document.getElementById('siteLoadingBar');
+const siteLoadingFillInner = document.getElementById('siteLoadingFillInner');
+const siteLoadingText = document.getElementById('siteLoadingText');
+
 async function loadAllFrames(){
   let loaded = 0;
   const queue = Array.from({length:TOTAL_FRAMES},(_,i)=>i);
@@ -59,9 +66,29 @@ async function loadAllFrames(){
       if(idx===undefined)return;
       await loadFrame(idx);
       loaded++;
-      const pct=Math.floor((loaded/TOTAL_FRAMES)*100);
-      loaderFill.style.width=pct+'%';
-      loaderPct.textContent=pct+'%';
+      const realPct=Math.floor((loaded/TOTAL_FRAMES)*100);
+
+      if(!preloaderDismissed){
+        /* Phase 1: map 0-10% real → 0-100% visual */
+        const visualPct = Math.min(Math.round((realPct / PRELOADER_THRESHOLD) * 100), 100);
+        loaderFill.style.width = visualPct + '%';
+        loaderPct.textContent = visualPct + '%';
+
+        if(realPct >= PRELOADER_THRESHOLD){
+          preloaderDismissed = true;
+          isReady = true;
+          drawFrame(0);
+          loader.classList.add('hidden');
+          pages[0].classList.add('is-active');
+          /* Show site loading bar for phase 2 */
+          setTimeout(()=>{ siteLoadingBar.classList.add('active'); }, 700);
+        }
+      } else {
+        /* Phase 2: site loading bar 10-100% */
+        const phase2Pct = Math.round(((realPct - PRELOADER_THRESHOLD) / (100 - PRELOADER_THRESHOLD)) * 100);
+        siteLoadingFillInner.style.width = phase2Pct + '%';
+        siteLoadingText.textContent = 'Загрузка видео ' + realPct + '%';
+      }
     }
   }
   await Promise.all(Array.from({length:CONCURRENCY},()=>worker()));
@@ -139,12 +166,15 @@ animate();
 (async function init(){
   resize();
   await loadAllFrames();
-  isReady=true;
-  drawFrame(0);
-  setTimeout(()=>{
+  /* All frames loaded — hide site loading bar */
+  if(!isReady){
+    isReady = true;
+    drawFrame(0);
     loader.classList.add('hidden');
     pages[0].classList.add('is-active');
-  },400);
+  }
+  siteLoadingText.textContent = 'Загрузка завершена';
+  setTimeout(()=>{ siteLoadingBar.classList.remove('active'); siteLoadingBar.classList.add('done'); }, 800);
 })();
 
 /* ── Contact Form ── */
